@@ -19,13 +19,12 @@
 # limitations under the License.
 #
 
-install_from_release(:cassandra) do
-  release_url   node[:cassandra][:release_url]
+ark "cassandra" do
+  url           node[:cassandra][:release_url]
   home_dir      node[:cassandra][:home_dir]
   version       node[:cassandra][:version]
   action        [:install]
   has_binaries  [ 'bin/cassandra' ]
-  not_if{ ::File.exists?("#{node[:cassandra][:install_dir]}/bin/cassandra") }
 end
 
 bash 'move storage-conf out of the way' do

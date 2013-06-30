@@ -62,7 +62,7 @@ default[:cassandra][:mx4j_port]  = "8081"
 #
 
 # install_from_release
-default[:cassandra][:version]           = "0.7.10"
+default[:cassandra][:version]           = "1.2.5"
 # install_from_release: tarball url
 default[:cassandra][:release_url]       = ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz"
 
@@ -71,13 +71,11 @@ default[:cassandra][:release_url]       = ":apache_mirror:/cassandra/:version:/a
 # Git repo location
 default[:cassandra][:git_repo]          = 'git://git.apache.org/cassandra.git'
 # until ruby gem is updated, use cdd239dcf82ab52cb840e070fc01135efb512799
-default[:cassandra][:git_revision]      = 'cdd239dcf82ab52cb840e070fc01135efb512799' # 'HEAD'
+default[:cassandra][:git_revision]      = 'master' # 'HEAD'
 # JNA deb location
 default[:cassandra][:jna_deb_amd64_url] = "http://debian.riptano.com/maverick/pool/libjna-java_3.2.7-0~nmu.2_amd64.deb"
 # MX4J Version
 default[:cassandra][:mx4j_version]      = "3.0.2"
-# MX4J location (at least as of Version 3.0.2)
-default[:cassandra][:mx4j_release_url]  = "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/#{node[:cassandra][:mx4j_version]}/mx4j-#{node[:cassandra][:mx4j_version]}.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb"
 
 #
 # Tunables - Partitioning

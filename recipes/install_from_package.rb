@@ -19,6 +19,22 @@
 # limitations under the License.
 #
 
-package "cassandra" do
+case node.platform_family
+when "debian"
+	apt_repository "datastax" do
+		uri           "http://debian.datastax.com/community"
+		components    ["stable", "main"]
+		key           "http://debian.datastax.com/debian/repo_key"
+	end
+when "rhel"
+	yum_repository "datastax" do
+		url           "http://rpm.datastax.com/community"
+		description   "DataStax Repo for Apache Cassandra"
+	end
+else
+	raise RuntimeError, "Platform family #{node.platform_family} is not supported"
+end
+
+package "dsc12" do
   action :install
 end

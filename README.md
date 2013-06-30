@@ -8,7 +8,7 @@ Installs and configures the Cassandra distributed storage system
 
 Cookbook based on Benjamin Black's (<b@b3k.us>) -- original at http://github.com/b/cookbooks/tree/cassandra/cassandra/
 
-Modified to use `metachef` discovery and options preparation.
+Modified to modernize and remove (some) dependencies
 
 ## Attributes
 
@@ -104,7 +104,6 @@ Modified to use `metachef` discovery and options preparation.
 * `install_from_package`     - Install From Package
 * `install_from_release`     - Install From Release
 * `iptables`                 - Automatically configure iptables rules for cassandra.
-* `jna_support`              - Jna Support
 * `mx4j`                     - Mx4j
 * `server`                   - Server
 ## Integration
@@ -113,12 +112,15 @@ Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 * java
+* maven
 * runit
 * thrift
 * volumes
-* provides_service
 * metachef
 * iptables
+* yum
+* apt
+* ark
 
 
 ## License and Author

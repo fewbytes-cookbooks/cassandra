@@ -26,12 +26,17 @@
 # http://wiki.apache.org/cassandra/Operations#Monitoring_with_MX4J
 #
 #
+include_recipe "maven"
 
-install_from_release(:mx4j) do
-  release_url   node[:cassandra][:mx4j_release_url]
-  home_dir      "/usr/local/share/mx4j"
+directory "/usr/local/share/mx4j" do
+	mode "0755"
+end
+
+maven "mx4j" do
+  artifact_id   "mx4j-tools"
+  group_id      "mx4j"
+  destination   "/usr/local/share/mx4j"
   version       node[:cassandra][:mx4j_version]
-  action        [:download, :unpack]
 end
 
 link "#{node[:cassandra][:home_dir]}/lib/mx4j-tools.jar" do
@@ -39,5 +44,9 @@ link "#{node[:cassandra][:home_dir]}/lib/mx4j-tools.jar" do
     notifies    :restart, "service[cassandra]", :delayed if startable?(node[:cassandra])
 end
 
-# FIXME: How to conditionally set this after the jarfile link has been  put in place?
-node[:cassandra][:enable_mx4j] = true
+ruby_block "set enable_jmx attribute" do
+	block do
+		node.set[:cassandra][:enable_mx4j] = true
+	end
+	only_if {::File.exists? "/usr/local/share/mx4j/lib/mx4j-tools.jar"}
+end

@@ -1,21 +1,19 @@
-maintainer       "Benjamin Black"
-maintainer_email "b@b3k.us"
+maintainer       "Avishai Ish-Shalom"
+maintainer_email "avishai@fewbytes.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.2.2"
+version          "0.3.0"
 
 description      "Cassandra: a massively scalable high-performance distributed storage system"
 
+depends          "apt"
+depends          "yum"
 depends          "java"
 depends          "runit"
 depends          "thrift"
 depends          "iptables"
-
-depends          "volumes"
-depends          "metachef"
-depends          "tuning"
-depends          "install_from"
-depends          "dashpot"
+depends          "ark"
+depends          "maven"
 
 recipe           "cassandra::autoconf",                "Automatically configure nodes from chef-server information."
 recipe           "cassandra::ec2snitch",               "Automatically configure properties snitch for clusters on EC2."
@@ -27,7 +25,6 @@ recipe           "cassandra::default",                 "Base configuration for c
 recipe           "cassandra::install_from_git",        "Install From Git"
 recipe           "cassandra::install_from_package",    "Install From Package"
 recipe           "cassandra::install_from_release",    "Install From Release"
-recipe           "cassandra::jna_support",             "Jna Support"
 recipe           "cassandra::mx4j",                    "Mx4j"
 recipe           "cassandra::server",                  "Server"
 

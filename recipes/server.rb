@@ -21,10 +21,14 @@
 
 include_recipe "runit"
 
-directory('/etc/sv/cassandra/env'){ owner 'root' ; action :create ; recursive true }
+execute "pkill -u cassandra jsvc" do
+  subscribes :stop, "package[dsc12]"
+  action :nothing
+  ignore_failure true
+end
+
 runit_service "cassandra" do
   options       node[:cassandra]
-  run_state     node[:cassandra][:run_state]
 end
 
 include_recipe("cassandra::authentication")
@@ -35,7 +39,7 @@ template "#{node[:cassandra][:conf_dir]}/cassandra.yaml" do
   group         "root"
   mode          "0644"
   variables     :cassandra => node[:cassandra]
-  notifies      :restart, "service[cassandra]", :delayed if startable?(node[:cassandra])
+  notifies      :restart, "runit_service[cassandra]", :delayed
 end
 
 template "#{node[:cassandra][:conf_dir]}/log4j-server.properties" do
@@ -44,11 +48,11 @@ template "#{node[:cassandra][:conf_dir]}/log4j-server.properties" do
   group         "root"
   mode          "0644"
   variables     :cassandra => node[:cassandra]
-  notifies      :restart, "service[cassandra]", :delayed if startable?(node[:cassandra])
+  notifies      :restart, "runit_service[cassandra]", :delayed
 end
 
 # have some fraction of the nodes announce as a seed
 if (node[:cassandra][:seed_node] || (node[:facet_index].to_i % 3 == 0) )
-  announce(:cassandra, :seed)
+  node.set[:cassandra][:seed] = true
 end
-announce(:cassandra, :server)
+
