@@ -62,7 +62,7 @@ node.set[:cassandra][:listen_addr] = node[:ipaddress]
 node.set[:cassandra][:rpc_addr]    = node[:ipaddress]
 # And find out who else provides cassandra in our cluster
 all_seeds  = search(:node, "cassandra_seed:true AND cassnadra_cluster_name:#{node[:cassandra][:cluster_name]}")
-all_seeds  = seeds << node if (all_seeds.length < 2)
+all_seeds << node if (all_seeds.length < 2)
 node.set[:cassandra][:seeds] = all_seeds.map{|n| n[:ipaddress] }.sort
 
 # Pull the initial token from the cassandra data bag if one is given
