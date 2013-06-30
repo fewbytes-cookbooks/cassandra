@@ -105,7 +105,8 @@ permissions_validity_in_ms: 2000
 #   ordering.  Use this as an example if you need custom collation.
 #
 # See http://wiki.apache.org/cassandra/Operations for more on
-# partitioners and token selection.partitioner: <%= @cassandra[:partitioner] %> #org.apache.cassandra.dht.RandomPartitioner
+# partitioners and token selection.
+partitioner: <%= @cassandra[:partitioner] %> #org.apache.cassandra.dht.RandomPartitioner
 
 # Directories where Cassandra should store data on disk.  Cassandra
 # will spread data evenly across them, subject to the granularity of

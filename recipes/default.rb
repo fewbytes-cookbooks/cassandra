@@ -30,9 +30,10 @@ user "cassandra" do
 end
 
 # == Directories
-([:conf_dir, :log_dir, :lib_dir, :pid_dir, :commitlog_dir, :saved_caches_dir] +
-	node['cassandra'][:data_dirs]).each do |dir|
-	directory node['cassandra'][dir] do
+([:conf_dir, :log_dir, :lib_dir, :pid_dir, :commitlog_dir, :saved_caches_dir].map {|dir| node['cassandra'][dir]} +
+	node['cassandra'][:data_dirs]
+).each do |dir|
+	directory dir do
 	  user          'cassandra' 
 	  group         'root'
 	  mode          '0755'

@@ -4,6 +4,7 @@ license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.3.0"
 
+name             "cassandra"
 description      "Cassandra: a massively scalable high-performance distributed storage system"
 
 depends          "apt"

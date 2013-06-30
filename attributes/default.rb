@@ -83,8 +83,8 @@ default[:cassandra][:mx4j_version]      = "3.0.2"
 #
 
 default[:cassandra][:auto_bootstrap]    = 'false'
-default[:cassandra][:authenticator]     = "AllowAllAuthenticator"
-default[:cassandra][:authorizer]        = "AllowAllAuthorizer"
+default[:cassandra][:authenticator]     = "org.apache.cassandra.auth.AllowAllAuthenticator"
+default[:cassandra][:authorizer]        = "org.apache.cassandra.auth.AllowAllAuthorizer"
 default[:cassandra][:partitioner]       = "org.apache.cassandra.dht.Murmur3Partitioner"
 default[:cassandra][:endpoint_snitch]   = "org.apache.cassandra.locator.SimpleSnitch"
 default[:cassandra][:dynamic_snitch]    = 'true'
