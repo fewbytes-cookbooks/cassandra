@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe "java"
+
 case node.platform_family
 when "debian"
 	apt_repository "datastax" do

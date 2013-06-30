@@ -22,7 +22,7 @@
 include_recipe "runit"
 
 execute "pkill -u cassandra jsvc" do
-  subscribes :stop, "package[dsc12]"
+  subscribes :run, "package[dsc12]"
   action :nothing
   ignore_failure true
 end
