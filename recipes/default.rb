@@ -37,10 +37,11 @@ end
 
 # == Directories
 [:conf_dir, :log_dir, :lib_dir, :pid_dir, :data_dirs, :commitlog_dir, :saved_caches_dir].each do |dir|
-directory node['cassandra'][dir] do
-  user          'cassandra' 
-  group         'root'
-  mode          '0755'
+	directory node['cassandra'][dir] do
+	  user          'cassandra' 
+	  group         'root'
+	  mode          '0755'
+	end
 end
 
 package "libjna-java"
