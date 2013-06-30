@@ -39,8 +39,8 @@ default[:cassandra][:log_dir]           = '/var/log/cassandra'
 default[:cassandra][:lib_dir]           = '/var/lib/cassandra'
 default[:cassandra][:pid_dir]           = '/var/run/cassandra'
 
-default[:cassandra][:data_dirs]         = ["/data/db/cassandra"]
-default[:cassandra][:commitlog_dir]     = "/mnt/cassandra/commitlog"
+default[:cassandra][:data_dirs]         = ["/var/lib/cassandra/data/db"]
+default[:cassandra][:commitlog_dir]     = "/var/lib/cassandra/commitlog"
 default[:cassandra][:saved_caches_dir]  = "/var/lib/cassandra/saved_caches"
 
 default[:cassandra][:user]              = 'cassandra'
@@ -48,12 +48,13 @@ default[:cassandra][:group]             = 'nogroup'
 default[:users]['cassandra'][:uid]      = 330
 default[:users]['cassandra'][:gid]      = 330
 
-default[:cassandra][:listen_addr]       = "localhost"
+default[:cassandra][:listen_addr]       = node[:ipaddress]
 default[:cassandra][:seeds]             = ["127.0.0.1"]
-default[:cassandra][:rpc_addr]          = "localhost"
+default[:cassandra][:rpc_addr]          = "0.0.0.0"
 default[:cassandra][:rpc_port]          = 9160
 default[:cassandra][:storage_port]      = 7000
-default[:cassandra][:jmx_dash_port]     = 12345         # moved from default of 8080 (conflicts with hadoop)
+default[:cassandra][:ssl_storage_port]  = 7001
+default[:cassandra][:jmx_dash_port]     = 7199
 default[:cassandra][:mx4j_addr]  = "127.0.0.1"
 default[:cassandra][:mx4j_port]  = "8081"
 
@@ -82,15 +83,14 @@ default[:cassandra][:mx4j_version]      = "3.0.2"
 #
 
 default[:cassandra][:auto_bootstrap]    = 'false'
-default[:cassandra][:authenticator]     = "org.apache.cassandra.auth.AllowAllAuthenticator"
-default[:cassandra][:authority]         = "org.apache.cassandra.auth.AllowAllAuthority"
-default[:cassandra][:partitioner]       = "org.apache.cassandra.dht.RandomPartitioner"       # "org.apache.cassandra.dht.OrderPreservingPartitioner"
+default[:cassandra][:authenticator]     = "AllowAllAuthenticator"
+default[:cassandra][:authorizer]        = "AllowAllAuthorizer"
+default[:cassandra][:partitioner]       = "org.apache.cassandra.dht.Murmur3Partitioner"
 default[:cassandra][:endpoint_snitch]   = "org.apache.cassandra.locator.SimpleSnitch"
 default[:cassandra][:dynamic_snitch]    = 'true'
 default[:cassandra][:initial_token]     = ""
 default[:cassandra][:hinted_handoff_enabled]       = 'true'
-default[:cassandra][:max_hint_window_in_ms]        = 3600000
-default[:cassandra][:hinted_handoff_delay_ms]      = 50
+default[:cassandra][:max_hint_window_in_ms]        = 10800000 # 3 hours
 
 #
 # Tunables -- Memory, Disk and Performance
@@ -104,7 +104,6 @@ default[:cassandra][:concurrent_reads]             = cpu[:total] * 2 # 2 per cor
 default[:cassandra][:concurrent_writes]            = 32              # typical number of clients
 default[:cassandra][:memtable_flush_writers]       = 1               # see comment in cassandra.yaml.erb
 default[:cassandra][:memtable_flush_after]         = 60
-default[:cassandra][:sliced_buffer_size]           = 64              # size of column slices
 default[:cassandra][:thrift_framed_transport]      = 15              # default 15; fixes CASSANDRA-475, but make sure your client is happy (Set to nil for debugging)
 default[:cassandra][:thrift_max_message_length]    = 16
 default[:cassandra][:incremental_backups]          = false
@@ -114,15 +113,16 @@ default[:cassandra][:memtable_ops]                 = 0.3
 default[:cassandra][:column_index_size]            = 64
 default[:cassandra][:in_memory_compaction_limit]   = 64
 default[:cassandra][:compaction_preheat_key_cache] = true
-default[:cassandra][:commitlog_rotation_threshold] = 128
 default[:cassandra][:commitlog_sync]               = "periodic"
 default[:cassandra][:commitlog_sync_period]        = 10000
 default[:cassandra][:flush_largest_memtables_at]   = 0.75
 default[:cassandra][:reduce_cache_sizes_at]        = 0.85
 default[:cassandra][:reduce_cache_capacity_to]     = 0.6
-default[:cassandra][:rpc_timeout_in_ms]            = 10000
 default[:cassandra][:rpc_keepalive]                = "false"
 default[:cassandra][:phi_convict_threshold]        = 8
 default[:cassandra][:request_scheduler]            = 'org.apache.cassandra.scheduler.NoScheduler'
 default[:cassandra][:throttle_limit]               = 80           # 2x (concurrent_reads + concurrent_writes)
 default[:cassandra][:request_scheduler_id]         = 'keyspace'
+default[:cassandra][:native_transport_port]        = 9042
+default[:cassandra][:native_transport_min_threads] = 16
+default[:cassandra][:native_transport_max_threads] = 128

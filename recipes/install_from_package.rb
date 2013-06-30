@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "java"
+include_recipe "cassandra::default"
 
 case node.platform_family
 when "debian"

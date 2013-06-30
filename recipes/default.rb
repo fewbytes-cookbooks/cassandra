@@ -42,3 +42,5 @@ directory node['cassandra'][dir] do
   group         'root'
   mode          '0755'
 end
+
+package "libjna-java"

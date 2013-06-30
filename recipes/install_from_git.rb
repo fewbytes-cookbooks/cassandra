@@ -22,7 +22,7 @@
 home_dir        = node[:cassandra][:home_dir]
 cassandra_install_dir = home_dir + '-git'
 
-include_recipe "java"
+include_recipe "cassandra::default"
 
 directory node['cassandra'][:home_dir] do
   user 'cassandra'
