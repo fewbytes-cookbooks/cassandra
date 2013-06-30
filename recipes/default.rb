@@ -22,12 +22,6 @@
 # == Recipes
 
 include_recipe "java"
-include_recipe "thrift"
-
-# == Packages
-
-gem_package 'cassandra'
-gem_package 'avro'
 
 # == Users
 
@@ -36,7 +30,8 @@ user "cassandra" do
 end
 
 # == Directories
-[:conf_dir, :log_dir, :lib_dir, :pid_dir, :data_dirs, :commitlog_dir, :saved_caches_dir].each do |dir|
+([:conf_dir, :log_dir, :lib_dir, :pid_dir, :commitlog_dir, :saved_caches_dir] +
+	node['cassandra'][:data_dirs]).each do |dir|
 	directory node['cassandra'][dir] do
 	  user          'cassandra' 
 	  group         'root'
@@ -44,4 +39,9 @@ end
 	end
 end
 
-package "libjna-java"
+package case node.platform_family
+when "debian"
+	"libjna-java"
+else
+	"jna"
+end
