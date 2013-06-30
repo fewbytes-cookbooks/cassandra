@@ -53,7 +53,7 @@
 clusters = data_bag_item('cassandra', 'clusters') rescue nil
 unless clusters.nil? || clusters[node[:cassandra][:cluster_name]].nil?
   clusters[node[:cassandra][:cluster_name]].each_pair do |k, v|
-    node[:cassandra][k] = v
+    node.set[:cassandra][k] = v
   end
 end
 
@@ -66,8 +66,8 @@ all_seeds  = seeds << node if (all_seeds.length < 2)
 node.set[:cassandra][:seeds] = all_seeds.map{|n| n[:ipaddress] }.sort
 
 # Pull the initial token from the cassandra data bag if one is given
-if node[:cassandra][:initial_tokens] && (not node[:facet_index].nil?)
-  node.set[:cassandra][:initial_token] = node[:cassandra][:initial_tokens][node[:facet_index].to_i]
+if node[:cassandra][:initial_tokens] && (not node[:cassandra][:facet_index].nil?)
+  node.set[:cassandra][:initial_token] = node[:cassandra][:initial_tokens][node[:cassandra][:facet_index].to_i]
 end
 # If there is an initial token, force auto_bootstrap to false.
 node.set[:cassandra][:auto_bootstrap] = false if node[:cassandra][:initial_token]

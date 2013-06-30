@@ -75,3 +75,5 @@ EOF
   only_if{ File.exists?('/usr/lib/hadoop/lib') }
   only_if{ Dir['/usr/lib/hadoop/lib/jackson*1.[456789]*'].nil? }
 end
+
+node.default['cassandra']['jar_path'] = ::File.join(node['cassandra']['home_dir'], "build/class")

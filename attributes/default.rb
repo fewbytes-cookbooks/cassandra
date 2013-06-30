@@ -62,7 +62,7 @@ default[:cassandra][:mx4j_port]  = "8081"
 #
 
 # install_from_release
-default[:cassandra][:version]           = "1.2.5"
+default[:cassandra][:version]           = "1.2.6"
 # install_from_release: tarball url
 default[:cassandra][:release_url]       = ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz"
 
@@ -96,16 +96,16 @@ default[:cassandra][:hinted_handoff_delay_ms]      = 50
 # Tunables -- Memory, Disk and Performance
 #
 
-default[:cassandra][:java_heap_size_min]           = "128M"        # consider setting equal to max_heap in production
-default[:cassandra][:java_heap_size_max]           = "1650M"
+default[:cassandra][:java_heap_size_min]           = "128M"         # consider setting equal to max_heap in production
+default[:cassandra][:java_heap_size_max]           = "#{(memory[:total].sub(/kB$/,'').to_f / 1024 / 2).to_i}M"
 default[:cassandra][:java_heap_size_eden]          = "1500M"
 default[:cassandra][:disk_access_mode]             = "auto"
-default[:cassandra][:concurrent_reads]             = 8             # 2 per core
-default[:cassandra][:concurrent_writes]            = 32            # typical number of clients
-default[:cassandra][:memtable_flush_writers]       = 1             # see comment in cassandra.yaml.erb
+default[:cassandra][:concurrent_reads]             = cpu[:total] * 2 # 2 per core
+default[:cassandra][:concurrent_writes]            = 32              # typical number of clients
+default[:cassandra][:memtable_flush_writers]       = 1               # see comment in cassandra.yaml.erb
 default[:cassandra][:memtable_flush_after]         = 60
-default[:cassandra][:sliced_buffer_size]           = 64            # size of column slices
-default[:cassandra][:thrift_framed_transport]      = 15            # default 15; fixes CASSANDRA-475, but make sure your client is happy (Set to nil for debugging)
+default[:cassandra][:sliced_buffer_size]           = 64              # size of column slices
+default[:cassandra][:thrift_framed_transport]      = 15              # default 15; fixes CASSANDRA-475, but make sure your client is happy (Set to nil for debugging)
 default[:cassandra][:thrift_max_message_length]    = 16
 default[:cassandra][:incremental_backups]          = false
 default[:cassandra][:snapshot_before_compaction]   = false

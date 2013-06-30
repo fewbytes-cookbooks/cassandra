@@ -4,14 +4,20 @@ export JAVA_HOME=<%= node['java']['home'] %>
 export CASSANDRA_CONF=<%= @cassandra[:conf_dir] %>
 export CASSANDRA_HOME=<%= @cassandra[:home_dir] %>
 CASSANDRA_USER=<%= @cassandra[:user] %>
-cassandra_bin=${CASSANDRA_HOME}/build/classes
-CLASSPATH=$CASSANDRA_CONF:$cassandra_bin
+CLASSPATH=$CASSANDRA_CONF
+classname="org.apache.cassandra.service.CassandraDaemon"
 
-for jar in $CASSANDRA_HOME/lib/*.jar; do
+<% if node[:cassandra][:jar_path] -%>
+cassandra_bin=<%= node[:cassandra][:jar_path] %>
+CLASSPATH=$CLASSPATH:$cassandra_bin
+<% end -%>
+
+for jar in $CASSANDRA_HOME/*.jar $CASSANDRA_HOME/lib/*.jar; do
   CLASSPATH=$CLASSPATH:$jar
 done
 
-source ${CASSANDRA_HOME}/conf/cassandra-env.sh
+[ -r "$CASSANDRA_HOME/conf/cassandra-env.sh" ] && source $CASSANDRA_HOME/conf/cassandra-env.sh
+[ -r "$CASSANDRA_CONF/cassandra-env.sh" ] && source $CASSANDRA_CONF/cassandra-env.sh
 
 JMX_PORT=<%= @cassandra[:jmx_dash_port] %>
 JMX_ADDR=<%= node[:ipaddress] %>
@@ -65,7 +71,7 @@ exec chpst -u${CASSANDRA_USER} -o 65535       \
 <%- end %>
       -Dlog4j.configuration=log4j-server.properties                    \
       -cp ${CLASSPATH}                                                 \
-org.apache.cassandra.thrift.CassandraDaemon 2>&1
+      $classname 2>&1
       
 
 #     -XX:NewRatio=3                                            \

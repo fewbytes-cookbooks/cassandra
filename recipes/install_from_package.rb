@@ -38,3 +38,6 @@ end
 package "dsc12" do
   action :install
 end
+
+node.default['cassandra']['jar_path'] = "/usr/share/cassandra"
+node.default['cassandra']['home_dir'] = "/usr/share/cassandra"
