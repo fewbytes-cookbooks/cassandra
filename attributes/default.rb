@@ -98,10 +98,11 @@ default[:cassandra][:max_hint_window_in_ms]        = 10800000 # 3 hours
 #
 ram_in_mb = (memory[:total].sub(/kB$/,'').to_f / 1024).to_i
 java_heap_size_max = [[ram_in_mb / 2, 1024].min, [ram_in_mb / 4, 8192].min].max
+java_eden_size = [cpu[:total] * 100,java_heap_size_max / 4].min
 
-default[:cassandra][:java_heap_size_min]           = "256M"         # consider setting equal to max_heap in production
+default[:cassandra][:java_heap_size_min]           = "#{[java_eden_size + 100, 256].max}M"         # consider setting equal to max_heap in production
 default[:cassandra][:java_heap_size_max]           = "#{java_heap_size_max}M"
-default[:cassandra][:java_heap_size_eden]          = "#{[cpu[:total] * 100,java_heap_size_max / 4].min}M"
+default[:cassandra][:java_heap_size_eden]          = "#{java_eden_size}M"
 default[:cassandra][:disk_access_mode]             = "auto"
 default[:cassandra][:concurrent_reads]             = cpu[:total] * 2 # 2 per core
 default[:cassandra][:concurrent_writes]            = 32              # typical number of clients
