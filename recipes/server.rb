@@ -21,7 +21,11 @@
 
 include_recipe "runit"
 
-execute "pkill -u cassandra jsvc" do
+bash "stop cassandra jsvc" do
+  code <<-EOS
+pkill -u cassandra jsvc && wait $(pgrep -u cassandra jsvc)
+rm -rf /var/lib/cassandra/*
+EOS
   subscribes :run, "package[dsc12]"
   action :nothing
   ignore_failure true

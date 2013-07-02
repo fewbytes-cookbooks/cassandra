@@ -83,7 +83,7 @@ default[:cassandra][:mx4j_version]      = "3.0.2"
 # Tunables - Partitioning
 #
 
-default[:cassandra][:auto_bootstrap]    = 'false'
+default[:cassandra][:auto_bootstrap]    = 'true'
 default[:cassandra][:authenticator]     = "org.apache.cassandra.auth.AllowAllAuthenticator"
 default[:cassandra][:authorizer]        = "org.apache.cassandra.auth.AllowAllAuthorizer"
 default[:cassandra][:partitioner]       = "org.apache.cassandra.dht.Murmur3Partitioner"
@@ -130,3 +130,4 @@ default[:cassandra][:request_scheduler_id]         = 'keyspace'
 default[:cassandra][:native_transport_port]        = 9042
 default[:cassandra][:native_transport_min_threads] = 16
 default[:cassandra][:native_transport_max_threads] = 128
+default[:cassandra][:num_tokens]                   = 256
