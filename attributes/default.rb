@@ -39,7 +39,7 @@ default[:cassandra][:log_dir]           = '/var/log/cassandra'
 default[:cassandra][:lib_dir]           = '/var/lib/cassandra'
 default[:cassandra][:pid_dir]           = '/var/run/cassandra'
 
-default[:cassandra][:data_dirs]         = ["/var/lib/cassandra/data/db"]
+default[:cassandra][:data_dirs]         = ["/var/lib/cassandra/data"]
 default[:cassandra][:commitlog_dir]     = "/var/lib/cassandra/commitlog"
 default[:cassandra][:saved_caches_dir]  = "/var/lib/cassandra/saved_caches"
 
@@ -57,6 +57,7 @@ default[:cassandra][:ssl_storage_port]  = 7001
 default[:cassandra][:jmx_dash_port]     = 7199
 default[:cassandra][:mx4j_addr]  = "127.0.0.1"
 default[:cassandra][:mx4j_port]  = "8081"
+default[:cassandra][:jna_path]   = "/usr/share/java"
 
 #
 # Install
@@ -95,10 +96,11 @@ default[:cassandra][:max_hint_window_in_ms]        = 10800000 # 3 hours
 #
 # Tunables -- Memory, Disk and Performance
 #
+ram_in_mb = (memory[:total].sub(/kB$/,'').to_f / 1024).to_i
 
-default[:cassandra][:java_heap_size_min]           = "128M"         # consider setting equal to max_heap in production
-default[:cassandra][:java_heap_size_max]           = "#{(memory[:total].sub(/kB$/,'').to_f / 1024 / 2).to_i}M"
-default[:cassandra][:java_heap_size_eden]          = "1500M"
+default[:cassandra][:java_heap_size_min]           = "256M"         # consider setting equal to max_heap in production
+default[:cassandra][:java_heap_size_max]           = "#{[[ram_in_mb / 2, 1024].min, [ram_in_mb / 4, 8192].min].max}M"
+default[:cassandra][:java_heap_size_eden]          = "#{[cpu[:total] * 100, cassandra[:java_heap_size_max] / 4].min}M"
 default[:cassandra][:disk_access_mode]             = "auto"
 default[:cassandra][:concurrent_reads]             = cpu[:total] * 2 # 2 per core
 default[:cassandra][:concurrent_writes]            = 32              # typical number of clients

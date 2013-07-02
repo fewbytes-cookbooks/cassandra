@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 <%- @cassandra ||= @options %>
 export JAVA_HOME=<%= node['java']['home'] %>
 export CASSANDRA_CONF=<%= @cassandra[:conf_dir] %>
@@ -14,6 +14,10 @@ CLASSPATH=$CLASSPATH:$cassandra_bin
 
 for jar in $CASSANDRA_HOME/*.jar $CASSANDRA_HOME/lib/*.jar; do
   CLASSPATH=$CLASSPATH:$jar
+done
+
+for jna_jar in <%= node[:cassandra][:jna_path] %>/{jna.jar,jna-platform.jar}; do
+  [ -r $jna_jar ] && CLASSPATH="$CLASSPATH:$jna_jar"
 done
 
 [ -r "$CASSANDRA_HOME/conf/cassandra-env.sh" ] && source $CASSANDRA_HOME/conf/cassandra-env.sh
