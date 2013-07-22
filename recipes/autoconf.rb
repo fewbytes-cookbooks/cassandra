@@ -78,8 +78,8 @@ unless all_seeds.map{|n| n["cassandra"]["topology"]["dc"]}.uniq.include?(node["c
 	all_seeds << node	
 end
 
-::Chef::Log.info "Found seeds: #{all_seeds.map(&:name).join(", ")}"
-node.set[:cassandra][:seeds] = all_seeds.map{|n| n[:ipaddress] }.uniq.sort
+::Chef::Log.info "Found seeds: #{all_seeds.map{|n| n["name"]}.join(", ")}"
+node.set[:cassandra][:seeds] = all_seeds.map{|n| n["ipaddress"] }.uniq.sort
 
 # Pull the initial token from the cassandra data bag if one is given
 if node[:cassandra][:initial_tokens] && (not node[:cassandra][:facet_index].nil?)

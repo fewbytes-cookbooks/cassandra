@@ -5,6 +5,8 @@ module ChefExt
 				node.run_context.cache["cassandra_nodes"] ||= \
 					partial_search(:node, "cassandra_cluster_name:#{node[:cassandra][:cluster_name]}",
 						:keys => {
+              				"name" => ["name"],
+              				"fqdn" => ["fqdn"],
 							"ipaddress" => ["ipaddress"],
 							"cloud" => ["cloud"],
 							"cassandra" => ["cassandra"]
@@ -12,23 +14,23 @@ module ChefExt
 			end
 
 			def search_cassandra_seed_nodes
-				search_cassandra_nodes.select {|n| node["cassandra"]["seed"] }
+				search_cassandra_nodes.select {|n| n["cassandra"]["seed"] }
 			end
-		end
-		
-		def ip_for_node(other_node)
-			if n.attribute?("cloud") and node["cloud"]
-				if n["cloud"]["provider"] == node["cloud"]["provider"]
-					n["cloud"]["local_ipv4"]
+
+			def ip_for_node(other_node)
+				if other_node.has_key?("cloud") and node["cloud"]
+					if other_node["cloud"]["provider"] == node["cloud"]["provider"]
+						other_node["cloud"]["local_ipv4"]
+					else
+						other_node["cloud"]["public_ipv4"]
+					end
+				elsif other_node.has_key?("cloud") and other_node["cloud"].has_key?(public_ipv4)
+					other_node["cloud"]["public_ipv4"]
 				else
-					n["cloud"]["public_ipv4"]
-				end
-			elsif n.attribute?("cloud") and n["cloud"].attribute?(public_ipv4)
-				n["cloud"]["public_ipv4"]
-			else
-				n["ipaddress"]
+					other_node["ipaddress"]
+				end || other_node["ipaddress"]
 			end
-		end
+		end		
 	end
 end
 
