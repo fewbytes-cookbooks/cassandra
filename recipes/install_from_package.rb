@@ -41,5 +41,16 @@ package "dsc12" do
   action :install
 end
 
+bash "stop cassandra jsvc" do
+  flags "-e"
+  code <<-EOS
+pkill -u cassandra jsvc && wait $(pgrep -u cassandra jsvc)
+rm -rf /var/lib/cassandra/*
+EOS
+  subscribes :run, "package[dsc12]"
+  action :nothing
+  ignore_failure true
+end
+
 node.default['cassandra']['jar_path'] = "/usr/share/cassandra"
 node.default['cassandra']['home_dir'] = "/usr/share/cassandra"

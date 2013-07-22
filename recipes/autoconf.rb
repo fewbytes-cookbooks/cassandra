@@ -50,6 +50,8 @@
 # Nodes are expected to be tagged with [:cassandra][:cluster_name] to indicate the cluster to which
 # they belong (nodes are in exactly 1 cluster in this version of the cookbook), and may optionally be
 # tagged with [:cassandra][:seed] set to true if a node is to act as a seed.
+extend Chef::Cassandra::Helpers
+
 clusters = data_bag_item('cassandra', 'clusters') rescue nil
 unless clusters.nil? || clusters[node[:cassandra][:cluster_name]].nil?
   clusters[node[:cassandra][:cluster_name]].each_pair do |k, v|
@@ -61,13 +63,21 @@ end
 node.set[:cassandra][:listen_addr] = node[:ipaddress]
 node.set[:cassandra][:rpc_addr]    = node[:ipaddress]
 # And find out who else provides cassandra in our cluster
-all_seeds  = search(:node, "cassandra_seed:true AND cassandra_cluster_name:#{node[:cassandra][:cluster_name]}")
+all_seeds  = search_cassandra_seed_nodes
+
 ::Chef::Log.info "Search yielded #{all_seeds.length} seeds"
 if (all_seeds.length < 2)
 	::Chef::Log.warn "Not enough seeds found, setting this node as seed"
 	node.set[:cassandra][:seed] = true
 	all_seeds << node
 end
+
+unless all_seeds.map{|n| n["cassandra"]["topology"]["dc"]}.uniq.include?(node["cassandra"]["topology"]["dc"])
+	::Chef::Log.warn "Adding this node as a seed since there are no seeds from this DC"
+	node.set[:cassandra][:seed] = true
+	all_seeds << node	
+end
+
 ::Chef::Log.info "Found seeds: #{all_seeds.map(&:name).join(", ")}"
 node.set[:cassandra][:seeds] = all_seeds.map{|n| n[:ipaddress] }.uniq.sort
 

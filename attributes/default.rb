@@ -131,3 +131,6 @@ default[:cassandra][:native_transport_port]        = 9042
 default[:cassandra][:native_transport_min_threads] = 16
 default[:cassandra][:native_transport_max_threads] = 128
 default[:cassandra][:num_tokens]                   = 256
+
+default[:cassandra][:topology][:dc]                = "dc1"
+default[:cassandra][:topology][:rack]              = "rack1"
