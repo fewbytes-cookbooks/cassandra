@@ -1,4 +1,4 @@
-module Chef
+module ChefExt
 	module Cassandra
 		module Helpers
 			def search_cassandra_nodes

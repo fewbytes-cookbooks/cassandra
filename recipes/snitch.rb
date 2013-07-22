@@ -1,4 +1,4 @@
-extend Chef::Cassandra::Helpers
+extend ChefExt::Cassandra::Helpers
 
 cassandra_nodes = search_cassandra_nodes
 
