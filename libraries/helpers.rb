@@ -13,7 +13,7 @@ module ChefExt
 						})
 				node.run_context.cache["cassandra_nodes"] = res
 				res << node
-				res.uniq!{|n| n["name"]}
+				res.uniq{|n| n["name"]}
 			end
 
 			def search_cassandra_seed_nodes
