@@ -2,8 +2,8 @@ module ChefExt
 	module Cassandra
 		module Helpers
 			def search_cassandra_nodes
-				node.run_context.cache["cassandra_nodes"] ||= \
-					partial_search(:node, "cassandra_cluster_name:#{node[:cassandra][:cluster_name]}",
+				return node.run_context.cache["cassandra_nodes"] if node.run_context.cache.has_key? "cassandra_nodes"
+				res = partial_search(:node, "cassandra_cluster_name:#{node[:cassandra][:cluster_name]}",
 						:keys => {
               				"name" => ["name"],
               				"fqdn" => ["fqdn"],
@@ -11,6 +11,9 @@ module ChefExt
 							"cloud" => ["cloud"],
 							"cassandra" => ["cassandra"]
 						})
+				node.run_context.cache["cassandra_nodes"] = res
+				res << node
+				res.uniq!{|n| n["name"]}
 			end
 
 			def search_cassandra_seed_nodes
