@@ -47,7 +47,7 @@ bash "stop cassandra jsvc" do
 pkill -u cassandra jsvc && wait $(pgrep -u cassandra jsvc)
 rm -rf /var/lib/cassandra/*
 EOS
-  subscribes :run, "package[dsc12]"
+  subscribes :run, "package[dsc12]", :immediately
   action :nothing
   ignore_failure true
 end
