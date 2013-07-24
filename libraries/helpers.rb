@@ -3,17 +3,22 @@ module ChefExt
 		module Helpers
 			def search_cassandra_nodes
 				return node.run_context.cache["cassandra_nodes"] if node.run_context.cache.has_key? "cassandra_nodes"
-				res = partial_search(:node, "cassandra_cluster_name:#{node[:cassandra][:cluster_name]}",
-						:keys => {
-              				"name" => ["name"],
-              				"fqdn" => ["fqdn"],
-							"ipaddress" => ["ipaddress"],
-							"cloud" => ["cloud"],
-							"cassandra" => ["cassandra"]
-						})
-				node.run_context.cache["cassandra_nodes"] = res
-				res << node
-				res.uniq{|n| n["name"]}
+				if Chef::Config[:solo]
+					::Chef::Log.warn "Skipping search on chef-solo; cassandra nodes will be read from data bag cassandra item clusters. Check README for more details"
+					cassandra_nodes_from_data_bag
+				else
+					res = partial_search(:node, "cassandra_cluster_name:#{node[:cassandra][:cluster_name]}",
+							:keys => {
+	              				"name" => ["name"],
+	              				"fqdn" => ["fqdn"],
+								"ipaddress" => ["ipaddress"],
+								"cloud" => ["cloud"],
+								"cassandra" => ["cassandra"]
+							})
+					node.run_context.cache["cassandra_nodes"] = res
+					res << node
+					res.uniq{|n| n["name"]}
+				end
 			end
 
 			def search_cassandra_seed_nodes
@@ -32,6 +37,18 @@ module ChefExt
 				else
 					other_node["ipaddress"]
 				end || other_node["ipaddress"]
+			end
+
+			def cassandra_nodes_from_data_bag
+				dbi = data_bag_item("cassandra", "clusters")
+				if dbi.has_key?(node["cassandra"]["cluster_name"]) and dbi[node["cassandra"]["cluster_name"]].has_key?("nodes")
+				 	dbi[node["cassandra"]["cluster_name"]]["nodes"].map do |n|
+						Mash.new(node["cassandra"].to_hash.merge(n))
+					end
+				end.push(node).uniq{|n| n["ipaddress"]}
+			rescue Exception => e
+				Chef::Log.warn("Failed reading nodes from data bag: #{e}")
+				[node]
 			end
 		end		
 	end
