@@ -42,11 +42,10 @@ package "dsc12" do
 end
 
 bash "stop cassandra jsvc" do
-  flags "-e"
   code <<-EOS
 CASSANDRA_PID=$(pgrep -u cassandra jsvc)
 kill $CASSANDRA_PID && wait $CASSANDRA_PID
-rm -rf /var/lib/cassandra/*
+pgrep -u cassandra -f java || rm -rf /var/lib/cassandra/*
 EOS
   subscribes :run, "package[dsc12]", :immediately
   action :nothing
