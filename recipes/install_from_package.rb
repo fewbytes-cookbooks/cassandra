@@ -44,7 +44,8 @@ end
 bash "stop cassandra jsvc" do
   flags "-e"
   code <<-EOS
-pkill -u cassandra jsvc && wait $(pgrep -u cassandra jsvc)
+CASSANDRA_PID=$(pgrep -u cassandra jsvc)
+kill $CASSANDRA_PID && wait $CASSANDRA_PID
 rm -rf /var/lib/cassandra/*
 EOS
   subscribes :run, "package[dsc12]", :immediately
