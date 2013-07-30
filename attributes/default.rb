@@ -134,3 +134,11 @@ default[:cassandra][:num_tokens]                   = 256
 
 default[:cassandra][:topology][:dc]                = "dc1"
 default[:cassandra][:topology][:rack]              = "rack1"
+
+# server encryption (ssl)
+default[:cassandra][:server_encryption_options][:internode_encryption] = 'none'
+default[:cassandra][:server_encryption_options][:keystore] = ::File.join(cassandra[:conf_dir], ".keystore")
+default[:cassandra][:server_encryption_options][:server_encryption_options][:keystore_password] = "cassandra"
+default[:cassandra][:server_encryption_options][:truststore] = ::File.join(cassandra[:conf_dir], ".truststore")
+default[:cassandra][:server_encryption_options][:truststore_password] = "cassandra"
+default[:cassandra][:server_encryption_options][:require_client_auth] = false
