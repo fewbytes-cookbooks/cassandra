@@ -2,7 +2,7 @@ maintainer       "Avishai Ish-Shalom"
 maintainer_email "avishai@fewbytes.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.4.1"
+version          "0.5.0"
 
 name             "cassandra"
 description      "Cassandra: a massively scalable high-performance distributed storage system"
@@ -15,6 +15,7 @@ depends          "iptables"
 depends          "ark"
 depends          "maven"
 depends          "partial_search"
+depends          "java_ext"
 
 recipe           "cassandra::autoconf",                "Automatically configure nodes from chef-server information."
 recipe           "cassandra::ec2snitch",               "Automatically configure properties snitch for clusters on EC2."

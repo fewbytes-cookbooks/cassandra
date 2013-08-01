@@ -46,3 +46,19 @@ when "debian"
 else
 	"jna"
 end
+
+ips = if node.attribute?("cloud") and node["cloud"].attribute?("provider") and node["cloud"].attribute?("public_ipv4")
+		[node["cloud"]["private_ipv4"], node["cloud"]["public_ipv4"], node["ipaddress"]].uniq
+	else
+		[node["ipaddress"]]
+	end
+
+java_ext_keystore node[:cassandra][:server_encryption_options][:keystore] do
+	password node[:cassandra][:server_encryption_options][:keystore_password]
+	cert_alias node[:fqdn]
+	dn "CN=#{node[:fqdn]}/O=#{node[:domain]}"
+	x509_extensions "SubjectAlternativeName" => ips.map{|ip| "IP=#{ip}"}.join(",")
+	with_certificate do |cert|
+		node.set["cassandra"]["certificate"] = cert
+	end 
+end
