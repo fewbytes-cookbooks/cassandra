@@ -16,8 +16,8 @@ module ChefExt
 								"cassandra" => ["cassandra"]
 							})
 					node.run_context.cache["cassandra_nodes"] = res
-					res << node
-					res.uniq{|n| n["name"]}
+					res << node.to_hash
+					res.map{|n| Mash.new(n)}.uniq{|n| n["name"]}
 				end
 			end
 
@@ -48,7 +48,7 @@ module ChefExt
 				end.push(node).uniq{|n| n["ipaddress"]}
 			rescue Exception => e
 				Chef::Log.warn("Failed reading nodes from data bag: #{e}")
-				[node]
+				[Mash.new(node.to_hash)]
 			end
 		end		
 	end
