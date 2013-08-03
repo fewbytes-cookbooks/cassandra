@@ -55,6 +55,7 @@ ips = if node.attribute?("cloud") and node["cloud"].attribute?("provider") and n
 	end
 
 java_ext_keystore node[:cassandra][:server_encryption_options][:keystore] do
+	owner "cassandra"
 	password node[:cassandra][:server_encryption_options][:keystore_password]
 	cert_alias node.name
 	dn "CN=#{node[:fqdn]}/O=#{node[:domain]}"
@@ -69,6 +70,7 @@ search_cassandra_nodes.select{|n| n["cassandra"]["certificate"]}.reduce({}) do |
 	h
 end.each do |_alias, cert|
 	java_ext_truststore_certificate _alias do
+		owner "cassandra"
 		certificate cert
 		truststore_path node[:cassandra][:server_encryption_options][:truststore]
 		password node[:cassandra][:server_encryption_options][:truststore_password]
