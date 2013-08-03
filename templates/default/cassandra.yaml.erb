@@ -332,7 +332,11 @@ listen_address: <%= @cassandra[:listen_addr] %> #localhost
 
 # Address to broadcast to other Cassandra nodes
 # Leaving this blank will set it to the same value as listen_address
+<% if @cassandra[:broadcast_address] -%>
+broadcast_address: <%= @cassandra[:broadcast_address] %>
+<% else -%>
 # broadcast_address: 1.2.3.4
+<% end -%>
 
 # Internode authentication backend, implementing IInternodeAuthenticator;
 # used to allow/disallow connections from peer nodes.

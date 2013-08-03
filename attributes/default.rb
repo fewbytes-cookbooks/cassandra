@@ -59,6 +59,13 @@ default[:cassandra][:mx4j_addr]  = "127.0.0.1"
 default[:cassandra][:mx4j_port]  = "8081"
 default[:cassandra][:jna_path]   = "/usr/share/java"
 
+local_ips = network.interfaces.map {|iface_name, iface_info| 
+	iface_info[:addresses].select{|addr, info| info[:family] == "inet"}.keys
+}.flatten.compact
+if cloud[:public_ipv4] and not local_ips.include?(cloud[:public_ipv4])
+	default[:cassandra][:broadcast_address] = cloud[:public_ipv4]
+end
+
 #
 # Install
 #
