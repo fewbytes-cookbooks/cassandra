@@ -48,31 +48,36 @@ else
 	"jna"
 end
 
-ips = if node.attribute?("cloud") and node["cloud"].attribute?("provider") and node["cloud"].attribute?("public_ipv4")
-		[node["cloud"]["private_ipv4"], node["cloud"]["public_ipv4"], node["ipaddress"]].uniq.compact
-	else
-		[node["ipaddress"]]
+if node[:cassandra][:server_encryption_options][:internode_encryption] != 'none' 
+	include_recipe "java_ext::jce"
+
+	ips = if node.attribute?("cloud") and node["cloud"].attribute?("provider") and node["cloud"].attribute?("public_ipv4")
+			[node["cloud"]["private_ipv4"], node["cloud"]["public_ipv4"], node["ipaddress"]].uniq.compact
+		else
+			[node["ipaddress"]]
+		end
+
+	java_ext_keystore node[:cassandra][:server_encryption_options][:keystore] do
+		owner "cassandra"
+		password node[:cassandra][:server_encryption_options][:keystore_password]
+		cert_alias node.name
+		dn "CN=#{node[:fqdn]}/O=#{node[:domain]}"
+		x509_extensions "SubjectAlternativeName" => ips.map{|ip| "IP=#{ip}"}.join(",")
+		keyalg "RSA"
+		with_certificate do |cert|
+			node.set["cassandra"]["certificate"] = cert
+		end 
 	end
 
-java_ext_keystore node[:cassandra][:server_encryption_options][:keystore] do
-	owner "cassandra"
-	password node[:cassandra][:server_encryption_options][:keystore_password]
-	cert_alias node.name
-	dn "CN=#{node[:fqdn]}/O=#{node[:domain]}"
-	x509_extensions "SubjectAlternativeName" => ips.map{|ip| "IP=#{ip}"}.join(",")
-	with_certificate do |cert|
-		node.set["cassandra"]["certificate"] = cert
-	end 
-end
-
-search_cassandra_nodes.select{|n| n["cassandra"]["certificate"]}.reduce({}) do |h, n|
-	h[n["name"]] = n["cassandra"]["certificate"]
-	h
-end.each do |_alias, cert|
-	java_ext_truststore_certificate _alias do
-		owner "cassandra"
-		certificate cert
-		truststore_path node[:cassandra][:server_encryption_options][:truststore]
-		password node[:cassandra][:server_encryption_options][:truststore_password]
+	search_cassandra_nodes.select{|n| n["cassandra"]["certificate"]}.reduce({}) do |h, n|
+		h[n["name"]] = n["cassandra"]["certificate"]
+		h
+	end.each do |_alias, cert|
+		java_ext_truststore_certificate _alias do
+			owner "cassandra"
+			certificate cert
+			truststore_path node[:cassandra][:server_encryption_options][:truststore]
+			password node[:cassandra][:server_encryption_options][:truststore_password]
+		end
 	end
 end
