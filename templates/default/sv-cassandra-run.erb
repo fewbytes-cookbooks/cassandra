@@ -27,7 +27,7 @@ JMX_PORT=<%= @cassandra[:jmx_dash_port] %>
 JMX_ADDR=<%= node[:ipaddress] %>
 
 # bump number of open files allowed way way up
-ulimit -n 65535
+ulimit -n <%= node["cassandra"]["open_files_limit"]  %>
 # allow cassandra to lock itself into memory if JNA is installed
 ulimit -l unlimited
 

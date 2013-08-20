@@ -142,6 +142,8 @@ default[:cassandra][:num_tokens]                   = 256
 default[:cassandra][:topology][:dc]                = "dc1"
 default[:cassandra][:topology][:rack]              = "rack1"
 
+default[:cassandra][:open_files_limit]             = 135168
+
 # server encryption (ssl)
 default[:cassandra][:server_encryption_options][:internode_encryption] = 'none'
 default[:cassandra][:server_encryption_options][:keystore] = ::File.join(cassandra[:conf_dir], ".keystore")
