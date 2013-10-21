@@ -40,15 +40,16 @@ end
 package "dsc" do
   package_name node["cassandra"]["package_name"]
   action :install
+  notifies :run, "bash[stop cassandra jsvc]", :immediately
 end
 
 bash "stop cassandra jsvc" do
   code <<-EOS
+service cassandra stop
 CASSANDRA_PID=$(pgrep -u cassandra jsvc)
 kill $CASSANDRA_PID && wait $CASSANDRA_PID
 pgrep -u cassandra -f java || rm -rf /var/lib/cassandra/*
 EOS
-  subscribes :run, "package[dsc]", :immediately
   action :nothing
   ignore_failure true
 end

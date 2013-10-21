@@ -153,3 +153,4 @@ default[:cassandra][:server_encryption_options][:truststore_password] = "cassand
 default[:cassandra][:server_encryption_options][:require_client_auth] = false
 
 default[:cassandra][:package_name] = "dsc20"
+default[:cassandra][:version] = "2.0.1"
