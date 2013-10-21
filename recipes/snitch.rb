@@ -10,7 +10,7 @@ end
 topologies_content = (cassandra_nodes.map{|n| 
 		"#{ip_for_node(n)}=#{n["cassandra"]["topology"]["dc"]}:#{n["cassandra"]["topology"]["rack"]}" 
 		} + \
-		cassandra_nodes.select{|n| n["cassandra"]["dc"] == node["cassandra"]["dc"] and n["cloud"]["public_ipv4"]}.map{|n| 
+		cassandra_nodes.select{|n| n["cassandra"]["dc"] == node["cassandra"]["dc"] and n["cloud"] and n["cloud"]["public_ipv4"]}.map{|n| 
 		"#{n["cloud"]["public_ipv4"]}=#{n["cassandra"]["topology"]["dc"]}:#{n["cassandra"]["topology"]["rack"]}" 
 		}
 		).uniq.sort.join("\n")
