@@ -141,6 +141,7 @@ default[:cassandra][:num_tokens]                   = 256
 
 default[:cassandra][:topology][:dc]                = "dc1"
 default[:cassandra][:topology][:rack]              = "rack1"
+default[:cassandra][:topology][:prefer_local]      = true
 
 default[:cassandra][:open_files_limit]             = 135168
 
