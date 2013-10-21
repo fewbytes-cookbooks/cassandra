@@ -151,3 +151,5 @@ default[:cassandra][:server_encryption_options][:keystore_password] = "cassandra
 default[:cassandra][:server_encryption_options][:truststore] = ::File.join(cassandra[:conf_dir], ".truststore")
 default[:cassandra][:server_encryption_options][:truststore_password] = "cassandra"
 default[:cassandra][:server_encryption_options][:require_client_auth] = false
+
+default[:cassandra][:package_name] = "dsc20"

@@ -37,7 +37,8 @@ else
 	raise RuntimeError, "Platform family #{node.platform_family} is not supported"
 end
 
-package "dsc12" do
+package "dsc" do
+  package_name node["cassandra"]["package_name"]
   action :install
 end
 
@@ -47,7 +48,7 @@ CASSANDRA_PID=$(pgrep -u cassandra jsvc)
 kill $CASSANDRA_PID && wait $CASSANDRA_PID
 pgrep -u cassandra -f java || rm -rf /var/lib/cassandra/*
 EOS
-  subscribes :run, "package[dsc12]", :immediately
+  subscribes :run, "package[dsc]", :immediately
   action :nothing
   ignore_failure true
 end
