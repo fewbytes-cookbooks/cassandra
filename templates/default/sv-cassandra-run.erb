@@ -31,7 +31,7 @@ ulimit -l unlimited
 echo $JVM_OPTS
 
 exec chpst -u${CASSANDRA_USER} -o 65535       \
-  -e <%= ::File.join(node['runit']['sv_dir'], 'cassandra', 'env') %> \
+  -e <%= @env_dir %> \
   /usr/bin/java                                                        \
   $JVM_OPTS                                                            \
 <%- [["ms", :java_heap_size_min], ["mx", :java_heap_size_max], ["mn", :java_heap_size_eden]].each do |opt| %>
