@@ -1,6 +1,8 @@
 #!/bin/bash
 <%- @cassandra ||= @options %>
 CASSANDRA_USER=<%= @cassandra[:user] %>
+CASSANDRA_CONF=<%= node[:cassandra][:conf_dir] %>
+CASSANDRA_HOME=<%= node[:cassandra][:home_dir] %>
 CLASSPATH=$CASSANDRA_CONF
 classname="org.apache.cassandra.service.CassandraDaemon"
 
@@ -31,7 +33,7 @@ ulimit -l unlimited
 echo $JVM_OPTS
 
 exec chpst -u${CASSANDRA_USER} -o 65535       \
-  -e <%= @env_dir %> \
+  -e <%= @options[:env_dir] %> \
   /usr/bin/java                                                        \
   $JVM_OPTS                                                            \
 <%- [["ms", :java_heap_size_min], ["mx", :java_heap_size_max], ["mn", :java_heap_size_eden]].each do |opt| %>
