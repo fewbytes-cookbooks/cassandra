@@ -23,6 +23,10 @@ include_recipe "runit"
 
 runit_service "cassandra" do
   options       node[:cassandra]
+  env({"JAVA_HOME" => node['java']['java_home'],
+      "CASSANDRA_CONF" => node[:cassandra][:conf_dir],
+      "CASSANDRA_HOME" => node[:cassandra][:home_dir]
+  })
 end
 
 include_recipe("cassandra::authentication")
