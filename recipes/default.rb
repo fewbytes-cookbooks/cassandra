@@ -62,7 +62,7 @@ if node[:cassandra][:server_encryption_options][:internode_encryption] != 'none'
 		password node[:cassandra][:server_encryption_options][:keystore_password]
 		cert_alias node.name
 		dn "CN=#{node[:fqdn]}/O=#{node[:domain]}"
-		x509_extensions "SubjectAlternativeName" => ips.map{|ip| "IP=#{ip}"}.join(",")
+		x509_extensions "SubjectAlternativeName" => ips.map{|ip| "IP:#{ip}"}.join(",")
 		keyalg "RSA"
 		with_certificate do |cert|
 			node.set["cassandra"]["certificate"] = cert
