@@ -67,15 +67,17 @@ all_seeds  = search_cassandra_seed_nodes
 
 ::Chef::Log.info "Search yielded #{all_seeds.length} seeds"
 if (all_seeds.length < 2)
-	::Chef::Log.warn "Not enough seeds found, setting this node as seed"
-	node.set[:cassandra][:seed] = true
-	all_seeds << node
+  ::Chef::Log.warn "Not enough seeds found, setting this node as seed"
+  node.set[:cassandra][:seed] = true
+  node.save
+  all_seeds << node
 end
 
 unless all_seeds.map{|n| n["cassandra"]["topology"]["dc"]}.uniq.include?(node["cassandra"]["topology"]["dc"])
-	::Chef::Log.warn "Adding this node as a seed since there are no seeds from this DC"
-	node.set[:cassandra][:seed] = true
-	all_seeds << node	
+  ::Chef::Log.warn "Adding this node as a seed since there are no seeds from this DC"
+  node.set[:cassandra][:seed] = true
+  node.save
+  all_seeds << node
 end
 
 ::Chef::Log.info "Found seeds: #{all_seeds.map{|n| n["name"]}.join(", ")}"
@@ -87,4 +89,3 @@ if node[:cassandra][:initial_tokens] && (not node[:cassandra][:facet_index].nil?
 end
 # If there is an initial token, force auto_bootstrap to false.
 node.set[:cassandra][:auto_bootstrap] = false if node[:cassandra][:initial_token]
-

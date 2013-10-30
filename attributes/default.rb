@@ -1,3 +1,4 @@
+default[:cassandra][:seed] = false
 # Make sure you define a cluster_size in roles/WHATEVER_cluster.rb
 # default[:cluster_size] = 5
 
