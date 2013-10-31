@@ -27,7 +27,7 @@ module ChefExt
 
       def ip_for_node(other_node)
         # If broadcast_address is assigned either by cloud logic or externally, use it for cross DC communication
-        if other_node["cassandra"].attribute?("broadcast_address") and \
+        if other_node["cassandra"].has_key?("broadcast_address") and \
           (node["cassandra"]["topology"]["dc"] != other_node["cassandra"]["topology"]["dc"])
           other_node["cassandra"]["broadcast_address"]
         else
