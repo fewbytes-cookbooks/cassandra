@@ -72,7 +72,7 @@ end
 #
 
 # install_from_release
-default[:cassandra][:version]           = "1.2.6"
+default[:cassandra][:version]           = "2.0.7"
 # install_from_release: tarball url
 default[:cassandra][:release_url]       = ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz"
 
